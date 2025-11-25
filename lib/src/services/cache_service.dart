@@ -74,7 +74,9 @@ class CacheService extends ContextualService {
     // Process a directory that might be a version directory
     Future<void> processDirectory(Directory dir, {String? forkName}) async {
       final versionFile = File(path.join(dir.path, 'version'));
-      if (versionFile.existsSync()) {
+      final versionJsonFile =
+          File(path.join(dir.path, 'bin', 'cache', 'flutter.version.json'));
+      if (versionFile.existsSync() || versionJsonFile.existsSync()) {
         // This is a version directory
         final name = path.basename(dir.path);
 

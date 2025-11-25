@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dart_mappable/dart_mappable.dart';
 import 'package:meta/meta.dart';
 import 'package:path/path.dart';
@@ -75,8 +77,17 @@ class CacheFlutterVersion extends FlutterVersion
   @MappableField()
   String? get flutterSdkVersion {
     final versionFile = join(directory, 'version');
+    final versionJsonFile = join(binPath, 'cache', 'flutter.version.json');
 
-    return versionFile.file.read()?.trim();
+    if (versionFile.file.existsSync()) {
+      return versionFile.file.read()?.trim();
+    } else if (versionJsonFile.file.existsSync()) {
+      final json = jsonDecode(versionJsonFile.file.read() ?? '');
+      final jsonVersion = json['flutterVersion'] as String?;
+      return jsonVersion;
+    } else {
+      return null;
+    }
   }
 
   @MappableField()
